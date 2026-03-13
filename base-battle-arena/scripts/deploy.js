@@ -1,6 +1,20 @@
 require("dotenv").config();
 const { ethers } = require("hardhat");
 
+async function deployContract(factory, args, deployer) {
+  // Always fetch the latest confirmed nonce and gas price right before sending
+  const nonce = await deployer.getNonce("latest");
+  const feeData = await ethers.provider.getFeeData();
+  const gasPrice = (feeData.gasPrice || 1000000n) * 15n / 10n; // 1.5x bump
+
+  const opts = { nonce, gasPrice };
+  const contract = args.length
+    ? await factory.deploy(...args, opts)
+    : await factory.deploy(opts);
+  await contract.waitForDeployment();
+  return contract;
+}
+
 async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying with:", deployer.address);
@@ -8,35 +22,23 @@ async function main() {
   const balance = await ethers.provider.getBalance(deployer.address);
   console.log("Wallet balance:", ethers.formatEther(balance), "ETH");
 
-  // ArenaCoin already deployed in a previous run — reuse its address
-  const arenaCoinAddr = "0xba384FAA696F8b39f43768422D35ff6dB1fdd704";
-  console.log("ArenaCoin (existing):", arenaCoinAddr);
-
-  console.log("\n[2/5] Deploying ArenaChampion...");
-  const ArenaChampion = await ethers.getContractFactory("ArenaChampion");
-  const arenaChampion = await ArenaChampion.deploy();
-  await arenaChampion.waitForDeployment();
-  const arenaChampionAddr = await arenaChampion.getAddress();
-  console.log("ArenaChampion deployed:", arenaChampionAddr);
-
-  console.log("\n[3/5] Deploying ArenaBattle...");
-  const ArenaBattle = await ethers.getContractFactory("ArenaBattle");
-  const arenaBattle = await ArenaBattle.deploy(arenaCoinAddr, arenaChampionAddr);
-  await arenaBattle.waitForDeployment();
-  const arenaBattleAddr = await arenaBattle.getAddress();
-  console.log("ArenaBattle deployed:", arenaBattleAddr);
+  // Already deployed contracts
+  const arenaCoinAddr     = "0xba384FAA696F8b39f43768422D35ff6dB1fdd704";
+  const arenaChampionAddr = "0x79287902E0A57f4Ea1b97CeCf56991Ee676A7Afa";
+  const arenaBattleAddr   = "0x72b7AbF70d85Da44BBD1231813895f40672D872e";
+  console.log("\nArenaCoin (existing):     ", arenaCoinAddr);
+  console.log("ArenaChampion (existing): ", arenaChampionAddr);
+  console.log("ArenaBattle (existing):   ", arenaBattleAddr);
 
   console.log("\n[4/5] Deploying ArenaPvP...");
   const ArenaPvP = await ethers.getContractFactory("ArenaPvP");
-  const arenaPvP = await ArenaPvP.deploy(arenaCoinAddr, arenaChampionAddr);
-  await arenaPvP.waitForDeployment();
+  const arenaPvP = await deployContract(ArenaPvP, [arenaCoinAddr, arenaChampionAddr], deployer);
   const arenaPvPAddr = await arenaPvP.getAddress();
   console.log("ArenaPvP deployed:", arenaPvPAddr);
 
   console.log("\n[5/5] Deploying ArenaMarketplace...");
   const ArenaMarketplace = await ethers.getContractFactory("ArenaMarketplace");
-  const arenaMarketplace = await ArenaMarketplace.deploy(arenaCoinAddr, arenaChampionAddr);
-  await arenaMarketplace.waitForDeployment();
+  const arenaMarketplace = await deployContract(ArenaMarketplace, [arenaCoinAddr, arenaChampionAddr], deployer);
   const arenaMarketplaceAddr = await arenaMarketplace.getAddress();
   console.log("ArenaMarketplace deployed:", arenaMarketplaceAddr);
 

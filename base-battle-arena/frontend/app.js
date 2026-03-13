@@ -1,7 +1,7 @@
-const arenaCoinAddress = "PASTE_ARENACOIN_ADDRESS_HERE";
-const arenaBattleAddress = "PASTE_ARENABATTLE_ADDRESS_HERE";
-const arenaPvPAddress = "PASTE_ARENAPVP_ADDRESS_HERE";
-const arenaMarketplaceAddress = "PASTE_MARKETPLACE_ADDRESS_HERE";
+const arenaCoinAddress      = "0xba384FAA696F8b39f43768422D35ff6dB1fdd704";
+const arenaBattleAddress    = "0x72b7AbF70d85Da44BBD1231813895f40672D872e";
+const arenaPvPAddress       = "0x75fc7a962de35aAD29084C1E2BB6571CD5F4a4FC";
+const arenaMarketplaceAddress = "0x47AeC6d95C194e53e71C786096EBDB77C53A7070";
 
 const arenaCoinABI = ["function balanceOf(address) view returns (uint256)"];
 const arenaBattleABI = ["function enterBattle() external", "event BattleResult(address indexed player, uint256 reward, uint256 nftId, uint256 attack, uint256 defense, uint8 rarity)"];
