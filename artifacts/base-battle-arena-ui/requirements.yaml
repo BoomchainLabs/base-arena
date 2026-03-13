@@ -1,0 +1,22 @@
+packages:
+  "ethers": "Core library for interacting with Ethereum/Base smart contracts"
+  "framer-motion": "For cinematic page transitions, hover effects, and battle result animations"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to merge tailwind classes safely"
+  "@hookform/resolvers": "Zod validation with react-hook-form"
+  "zod": "Schema validation for forms"
+  "react-hook-form": "Form state management"
+  "lucide-react": "Icons for UI elements"
+
+images:
+  - path: "artifacts/base-battle-arena-ui/public/images/arena-bg.png"
+    description: "Dark cinematic sci-fi battle arena background, deep shadows, subtle neon purple and blue glowing accents, highly detailed, 8k resolution"
+    aspect_ratio: "16:9"
+  - path: "artifacts/base-battle-arena-ui/public/images/champion-placeholder.png"
+    description: "A glowing neon cyber-fantasy warrior silhouette, dramatic rim lighting, dark background, esports gaming style avatar"
+    aspect_ratio: "1:1"
+
+notes:
+  - "The app relies entirely on Web3 wallet connection (MetaMask) via window.ethereum."
+  - "No traditional backend API exists; all data is fetched directly from the Base mainnet smart contracts."
+  - "Base Mainnet chain ID is 8453 (0x2105)."
